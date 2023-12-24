@@ -2,24 +2,21 @@ package _06_frogger;
 
 import javax.swing.JOptionPane;
 
+import _06_frogger.Frogger.Car;
 import processing.core.PApplet;
+import processing.core.PImage;
+
 
 public class Frogger extends PApplet {
-	
-	boolean intersects(Car car) {
-		 if ((y > car.getY() && y < car.getY()+50) &&
-		                (x > car.getX() && x < car.getX()+car.getSize())) {
-		   return true;
-		  }
-		 else  {
-		  return false;
-		 }
-		 
-		 
-    static int WIDTH = 600;
-    static int HEIGHT = 400;
+	PImage back;
+	PImage carLeft;
+	PImage carRight;
+	PImage frog;
+    static int WIDTH = 844;
+    static int HEIGHT = 600;
     int x = 300;
-    int y = 350;
+    int y = 500 ;
+    int score = 0;
     Car car;
     Car car1;
     @Override
@@ -30,18 +27,25 @@ public class Frogger extends PApplet {
     @Override
     public void setup() {
     	int xpos = 450;
-    	int carSize = 100;
+    	int carSize = 160;
     	int carSpeed = 7;
-    	car = new Car(xpos, 50, carSize, carSpeed);
-    	car1 = new Car(xpos, 200, carSize, carSpeed+3);
+    	car = new Car(xpos, 150, carSize, carSpeed);
+    	car1 = new Car(xpos, 300, carSize, carSpeed+3);
+        back = loadImage("/Users/league/git/level1-module3-Person121200/src/_06_frogger/froggerBackground.png");
+        carLeft = loadImage("/Users/league/git/level1-module3-Person121200/src/_06_frogger/carLeft.png");
+        carLeft.resize(160,100);
+        carRight = loadImage("/Users/league/git/level1-module3-Person121200/src/_06_frogger/carRight.png");
+        carRight.resize(160,100);
+        frog = loadImage("/Users/league/git/level1-module3-Person121200/src/_06_frogger/frog.png");
+        frog.resize(75,75);
     }
 
 
 	@Override
     public void draw() {
-    	background(66, 132, 245);
     	fill(66, 245, 87);
-    	ellipse(x, y, 50, 50);
+        background(back);
+        image (frog, x, y);
     	ifOutsideCanvas();
     	car.display();
     	car.speed();
@@ -51,6 +55,23 @@ public class Frogger extends PApplet {
     	car1.speed();
     	car1.carOutside();
     	car1.getY();
+    	intersects(car);
+    	intersects(car1);
+    	if (intersects(car) == true || (intersects(car1) == true)) {
+    		y = 500;
+    		x = 300;
+    		score =0;
+    		JOptionPane.showMessageDialog(null, "YOU LOST!!!");
+    		JOptionPane.showMessageDialog(null, "Click ok to play again.");
+    		
+    	}
+    	fill(255, 255, 255);
+	    rect(5 , 5,  75, 25);
+	    fill(0, 0, 0);
+	    text("Score: "+score, 15, 20);
+	    textSize(10);
+	    
+	    
     	}
     
     public void keyPressed()
@@ -79,17 +100,29 @@ public class Frogger extends PApplet {
     	if (x <= -25) {
     		x = 300;
     	}
-    	else if (x >= 625) {
-    		x = 300;
+    	else if (x >= WIDTH) {
+    		x = WIDTH/2;
     	}
     	else if (y <= 0) {
-    		y = 350;
+    		y = HEIGHT-100;
+    		score += 1;
     	}
-    	else if (y >= 425) {
-    		y = 350;
+    	else if (y >= HEIGHT-50) {
+    		y = HEIGHT-100;
     	}
     }
     
+	boolean intersects(Car car) {
+		 if ((y > car.getY() && y < car.getY()+50) &&
+		                (x > car.getX() && x < car.getX()+car.getSize())) {
+		   return true;
+		  }
+		 else  {
+		  return false;
+		 }
+	}
+	
+
     
     
     static public void main(String[] args) {
@@ -112,7 +145,8 @@ public class Frogger extends PApplet {
     	
     	void display() {
     	    fill(0, 255, 0);
-    	    rect(xpos , ypos,  carSize, 50);
+            image (carLeft,xpos, ypos);
+
     	  }
     	
     	void speed() {
@@ -121,25 +155,27 @@ public class Frogger extends PApplet {
     	
     	void carOutside() {
     		if(xpos <= -20) {
-    			 xpos = 450;
+    			 xpos = WIDTH;
     		}
     	}
     	
-    	void getX() {
-    		
+    	int getX() {
+    		return xpos;
     	}
     	
-    	void getY() {
-    		
+    	int getY() {
+    		return ypos;
     	}
     	
-    	void getSize() {
-    		
+    	int getSize() {
+    		return carSize;
     	}
+    	
+}
 
-    }
 
 }
+
 
 
 
